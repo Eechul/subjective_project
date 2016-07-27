@@ -9,16 +9,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
     <link rel="stylesheet" href="jquery-ui-1.12.0.custom/jquery-ui.min.css">
     <link rel="stylesheet" href="jquery-ui-1.12.0.custom/jquery-ui.structure.min.css">
     <link rel="stylesheet" href="jquery-ui-1.12.0.custom/jquery-ui.theme.min.css">
-
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
     <link rel="stylesheet" href="css/normalize.css">
@@ -86,27 +83,22 @@
         }
     </style>
 </head>
-
-
-
-
-
-
-
-
-
-
 <body>
     <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-
     <div class="container text-center">
 
         <form class="form-signin" method="post">
             <h2 class="form-signin-heading">Web Quiz</h2>
 
-            <input type="text" name="job" class="form-control" placeholder="Job" required autofocus>
+            <div class="form-group">
+                <select class="form-control" name="job">
+                    <option value="학생">Student</option>
+                    <option value="교수">Professor</option>
+                    <option value="관리자">Admin</option>
+                </select>
+            </div>
 
             <input type="text" name="email" class="form-control" placeholder="Email" required autofocus>
 
@@ -114,7 +106,7 @@
 
             <div class="btn-group" role="group" aria-label="...">
                 <button class="btn btn-lg btn-info btn-block" type="submit" id="si">Sign in</button>
-                <a href="/register" class="btn btn-lg btn-primary btn-block" id="sp">Sign up</a>
+                <a href="/register" class="btn btn-lg btn-primary btn-block" id="sp" >Sign up</a>
             </div>
         </form>
 
@@ -133,11 +125,11 @@
     <script>
         window.jQuery || document.write('<script src="js/vendor/jquery-1.11.3.min.js"><\/script>')
     </script>
-    <!-- <script src="js/plugins.js"></script>
+    <script src="js/plugins.js"></script>
     <script src="js/main.js"></script>
     <script rsc="jquery-ui-1.12.0.custom/jquery.js"></script>
     <script rsc="jquery-ui-1.12.0.custom/jquery-ui.min.js"></script>
-    <script rsc="jquery-ui-1.12.0.custom/jquery.js"></script> -->
+    <script rsc="jquery-ui-1.12.0.custom/jquery.js"></script>
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
     <script>
         (function (b, o, i, l, e, r) {

@@ -2,8 +2,10 @@ var express = require('express');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var MySQLStore = require('express-mysql-session')(session);
 //var fs = require('fs');
 var app = express();
+var dateFormat = require('./config/userFunction/dateFormat')
 
 var mysql = require('mysql');
 var conn = mysql.createConnection({
@@ -14,6 +16,19 @@ var conn = mysql.createConnection({
 });
 conn.connect();
 
+app.use(session({
+  secret: '123215415@@DSAGnklndklsa',
+  resave: false,
+  saveUninitialized: true,
+  store: new MySQLStore({
+    host      : 'localhost',
+    port      : 3306,
+    user      : 'root',
+    password  : 'dongdb',
+    database  : 'webquizdb'
+  })
+}));
+app.use(express.static('public'));
 app.set('views', __dirname+'/views');
 app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
@@ -25,23 +40,35 @@ app.get('/login', function(req, res) {
 })
 
 app.get('/register', function(req, res) {
-  res.render('register')
+  var sql = 'SELECT DETNUM, DETNAME FROM DEPARTMENT'
+  conn.query(sql, [], function(err, results, fields) {
+    if(err) {
+      console.log(err);
+    } else {
+        console.log(results);
+        res.render('register', {detresults : results})
+    }
+  })
 })
 
 app.post('/register', function(req, res) {
-  var register = {
-    name : req.body.name,
-    gender : req.body.gender,
-    email: req.body.email,
-    password_input : req.body.password_input,
-    password_confirm : req.body.password_confirm,
-    birthdate : req.body.birthdate
-  }
-  var sql ="INSERT INTO student SET ?"
-  conn.query(sql, register, function(err, results) {
-
+  var register = [
+    req.body.detnum,
+    req.body.email,
+    req.body.name,
+    // password_input : req.body.password_input,
+    // password_confirm : req.body.password_confirm,
+    req.body.gender,
+    req.body.birthdate
+  ]
+  var sql ="INSERT INTO student(detnum, stemail, stname, stgender, stbirhdate) VALUES (?, ?, ?, ?, ?)"
+  conn.query(sql, register, function(err, data) {
+    if(err) {
+      console.log(err);
+    } else {
+      console.log(data);
+    }
   });
-
 
 })
 

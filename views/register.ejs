@@ -1,0 +1,140 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Project</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+    <style>
+      select {
+        display: inline;
+      }
+    </style>
+</head>
+
+<body>
+    <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+    <div class="container">
+        <div class="container text-center">
+            <div class="page-header">
+                <h1>Register</h1>
+            </div>
+        </div>
+
+        <form class="form-horizontal" role="form" name="registerForm" method="post" action="/register">
+          <div class="form-group">
+            <label class="control-label col-sm-2">학과:</label>
+            <div class="col-sm-10">
+              <select name="detnum" class="form-control">
+                <% for(var i=0; i<detresults.length; i++) {%>
+                  <option value="<%= detresults[i].DETNUM %>"><%= detresults[i].DETNAME %></option>
+                <% } %>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+              <label class="control-label col-sm-2" for="id">이름:</label>
+              <div class="col-sm-10">
+                  <input type="text" class="form-control" name="name" placeholder="이름 입력">
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="control-label col-sm-2">성별:</label>
+
+              <div class="form-group">
+                  <label class="radio-inline col-sm-5">
+                      <input type="radio" name="gender" id="genderRadioMan" value="남자"> 남
+                  </label>
+                  <label class="radio-inline">
+                      <input type="radio" name="gender" id="genderRadioWomen" value="여자"> 여
+                  </label>
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="control-label col-sm-2" for="email">이메일:</label>
+              <div class="col-sm-10">
+                  <input type="email" class="form-control" name="email" placeholder="example@example.com">
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="control-label col-sm-2" for="password">비밀번호:</label>
+              <div class="col-sm-10">
+                  <input type="password" class="form-control" name="password_input" id="passwordInput" placeholder="비밀번호 입력">
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="control-label col-sm-2" for="password">비밀번호 확인:</label>
+              <div class="col-sm-10">
+                  <input type="password" class="form-control" name="password_confirm" id="passwordConfirm" placeholder="비밀번호 확인">
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="control-label col-sm-2" for="cn">생년월일:</label>
+              <div class="col-sm-10">
+                  <input type="text" class="form-control" name="birthdate" placeholder="6자리 생년월일">
+              </div>
+          </div>
+          <div class="form-group">
+              <div class="col-sm-offset-6 col-sm-10">
+                  <button type="submit" class="btn btn-default">가입</button>
+              </div>
+          </div>
+        </form>
+    </div>
+
+
+
+
+
+
+
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>
+        window.jQuery || document.write('<script src="js/vendor/jquery-1.11.3.min.js"><\/script>')
+    </script>
+    <!-- <script src="js/plugins.js"></script>
+    <script src="js/main.js"></script> -->
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+    <script>
+        (function (b, o, i, l, e, r) {
+            b.GoogleAnalyticsObject = l;
+            b[l] || (b[l] =
+                function () {
+                    (b[l].q = b[l].q || []).push(arguments)
+                });
+            b[l].l = +new Date;
+            e = o.createElement(i);
+            r = o.getElementsByTagName(i)[0];
+            e.src = 'https://www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e, r)
+        }(window, document, 'script', 'ga'));
+        ga('create', 'UA-XXXXX-X', 'auto');
+        ga('send', 'pageview');
+    </script>
+    <script src="/js/register/register.js"></script>
+</body>
+
+
+</html>
