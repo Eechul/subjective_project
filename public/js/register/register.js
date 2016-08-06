@@ -24,7 +24,7 @@ var formSubmit = function() {
 }
 
 // 이메일 중복체크 서버 ajax 처리
-var checkEmail = function(){
+var checkEmail = function() {
   $.ajax({
      url: 'http://localhost:3005/home/checkEmail',
      dataType: 'json',

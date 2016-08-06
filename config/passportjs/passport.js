@@ -47,7 +47,7 @@ module.exports = function(app) {
         if(err) {
           console.log(err);
         } else {
-          if(uname === user.email){
+          if(user && uname === user.email){
             return hasher({password:pwd, salt:user.pwdsalt}, function(err,
             pass, salt, hash) {
               if(hash === user.pwdhash) {

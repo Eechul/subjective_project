@@ -13,7 +13,7 @@ module.exports = function(passport) {
     '/login',
     passport.authenticate(
       'local',
-      { successRedirect: '/main',
+      { successRedirect: '/home',
         failureRedirect: '/home',
         failureFlash: false
       }
@@ -27,7 +27,7 @@ module.exports = function(passport) {
       if(err) {
         console.log(err);
       } else {
-        res.redirect('/')
+        res.redirect('/home')
       }
     })
   })
@@ -40,7 +40,6 @@ module.exports = function(passport) {
       if(err) {
         console.log(err);
       } else {
-        console.log('data[0].stemail', data[0]);
         if(data[0]) {
           res.send({result:true})
         } else {
@@ -49,8 +48,23 @@ module.exports = function(passport) {
       }
     })
   })
+
+  // 세션에 user 객체가 있는지 확인한 후 있으면 인증을 했는지 안했는지 훝어본다
+  // '1' 은 인증완료 나머지는 인층이 안된상태(복잡한 형태의 문자열)
+  // user객체가 없다면 아이디나 비밀번호가 틀린것이기 때문에 로그인페이지로 이동
   route.get('/', function(req, res) {
-    res.render('login')
+    if(req.user) {
+      switch(req.user.confirm) {
+        case '1':
+          res.render('main')
+          break;
+        default:
+          res.render('confirm')
+          break;
+      }
+    } else {
+      res.render('login')
+    }
   })
 
   route.get('/register', function(req, res) {
@@ -65,9 +79,9 @@ module.exports = function(passport) {
     })
   })
   route.post('/register', function(req, res) {
-    var confirm = randomStr.makeConfirmId(); // 이메일을 섞어서 인증번호를 만듬,,;; 이상한거같긴함
+    var confirm = randomStr.makeConfirmId();
     console.log(confirm);
-    var register = [
+    var user = [
      req.body.detnum,
      req.body.email,
      req.body.name,
@@ -76,12 +90,12 @@ module.exports = function(passport) {
      confirm
    ]
    var pswdsecurity = {
-     email : register[1]
+     email : user[1]
    }
     // 1. 학생테이블에 정보 저장
     var studentInsertPromise = new Promise(function (resolve, reject) {
       var sql ="INSERT INTO student(detnum, stemail, stname, stgender, stbirthdate, confirm) VALUES (?, ?, ?, ?, ?, ?)"
-      conn.query(sql, register, function(err, data) {
+      conn.query(sql, user, function(err, data) {
        if(err) {
          console.log(err);
          reject(err)
@@ -109,23 +123,28 @@ module.exports = function(passport) {
             // 회원가입 승인 메일 전송 부분
             var mailOptions={
                     from : "webQuiz관리자 <choise154@gmail.com>",
-                    to : register[1], // 이메일 아이디
+                    to : user[1], // 이메일 아이디
                     subject : "[webQuiz] 이메일 인증 서비스 입니다.",
                     // text : "Your Text",
                     html : `<h2>
                       <a href="http://localhost:3005/home/register/${confirm}">
-                        ${register[2]}님, 인증을 완료하세요!</a>
+                        ${user[2]}님, 인증을 완료하세요!</a>
                       </h2>`
                 }
                 smtpTransport.sendMail(mailOptions, function(err, res){
                   if(err){
                       console.log(err);
-                  }else{
-                      console.log("Message sent success");
                   }
               });
               resolve('good2')
-            res.redirect('/home');
+              // req.login(user, function(err) {
+              //   req.session.save(function() {
+              //     res.redirect('/');
+              //   });
+              // });   회원가입 후 바로로그인
+              // 잘 안되는 이유 => user가 배열이고 배열안에 학생번호가 없는상태
+              // 해결책-> 학생번호를 직접 지정해줘야 함 (날짜+무작위 조합)
+              // 그리고 insert부분 set ? 으로 바꾸기 . 일단 미뤄놓기
           }
         })
       });

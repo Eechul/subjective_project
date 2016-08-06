@@ -5,6 +5,7 @@ var passport = require('./config/passportjs/passport')(app)
 
 var home = require('./routes/home')(passport);
 var main = require('./routes/main')();
+
 app.use('/home', home);
 app.use('/main', main);
 
