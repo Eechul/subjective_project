@@ -15,13 +15,14 @@ module.exports = function() {
     } else {
       console.log('세션없음');
     }
-
   })
   route.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/home')
   })
-
+  route.get('/createquiz', function(req, res) {
+      res.render('createQuiz')
+    })
   route.get('/replayConfirm', function(req, res) {
     var user = req.user
     var confirm = randomStr.makeConfirmId();

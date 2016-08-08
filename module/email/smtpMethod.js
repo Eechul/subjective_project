@@ -9,7 +9,7 @@ module.exports = function() {
       port: 465,
       auth : {
           user : "choise154@gmail.com",
-          pass : "dowklee741"
+          pass : ""
       }
   }));
 

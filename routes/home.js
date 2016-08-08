@@ -139,7 +139,7 @@ module.exports = function(passport) {
               resolve('good2')
               // req.login(user, function(err) {
               //   req.session.save(function() {
-              //     res.redirect('/');
+              res.redirect('/home');
               //   });
               // });   회원가입 후 바로로그인
               // 잘 안되는 이유 => user가 배열이고 배열안에 학생번호가 없는상태

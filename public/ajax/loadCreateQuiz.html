@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>load</title>
+  </head>
+  <body>
+    <div class="container-fluid text-center">
+        <div class="page-header">
+            <h1>Quiz Create</h1>
+        </div>
+    </div>
+
+    <div id="short_answer" class="container-fluid">
+        <form role="form">
+            <div class="form-group">
+                <label for="comment">주관식 &#58; </label>
+                <textarea class="form-control" rows="5" id="comment" placeholder="문제입력"></textarea>
+                <br>
+                <div class="form-group">
+                    <label for="주관식">주관식</label>
+                    <input type="text" id="주관식" placeholder="문제입력">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="multiple_choice" class="container-fluid">
+      <form role="form">
+          <div class="form-group">
+              <label for="객관식">객관식</label>
+              <textarea class="form-control" rows="5" id="comment" placeholder="문제입력"></textarea>
+          </div>
+
+          <div class="container-fluid">
+              <form role="form">
+                <div id="examples"></div>
+                <button type="button" id="addExample" class="btn btn-lg btn-info btn-xs" name="button">보기추가</button>
+                  <!-- <div class="checkbox">
+                      <label>
+                          <input type="checkbox" value="" />
+                          <input type="text">
+                      </label>
+                  </div>
+                  <div class="checkbox">
+                      <label>
+                          <input type="checkbox" value="" />
+                          <input type="text">
+                      </label>
+                  </div>
+                  <div class="checkbox">
+                      <label>
+                          <input type="checkbox" value="" />
+                          <input type="text">
+                      </label>
+                  </div>
+                  <div class="checkbox">
+                      <label>
+                          <input type="checkbox" value="" />
+                          <input type="text">
+                      </label>
+                  </div> -->
+              </form>
+          </div>
+      </form>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+  </body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        body > div > form {
+            font-size: 1.5em;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container-fluid text-center">
+      <div class="page-header">
+          <h1>Quiz Create</h1>
+      </div>
+    </div>
+    <hr>
+
+    <div class="container-fluid text-center">
+      <form role="form">
+        <label class="radio-inline">
+            <input type="radio" name="question_type" value="multiple_choice">객관식
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="question_type" value="short_answer">주관식
+        </label>
+      </form>
+    </div>
+
+    <div id="question_type_load">
+
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="/js/quiz/createQuiz/createQuiz.js"></script>
+</body>
+
+</html>
