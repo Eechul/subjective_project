@@ -21,29 +21,34 @@ $(document).ready(function(){
   $("body").on("click", "#addExample", function() {
     var example =
     `<div id="example_${number}">
-            <label id="number_${number}"></label>
+            <label id="number_${number}">1</label>
             <input id="exampleAnswer_${number}" name="checkAnswer" type="checkbox" />
             <input id="exampleText_${number}" type="text">
             <button type="button" id="removeExample" class="btn btn-lg btn-danger btn-xs">삭제</button>
     </div>
     `
-    console.log(typeof example);
     sequenceArr.push(number)
+    var index = sequenceArr.indexOf(Number(number))+1
+    console.log(index);
+    $("#examples").append(example);
+    $("#number_"+number).text(index)
     console.log(sequenceArr);
     number++;
-    $("#examples").append(example);
 
   });
   $("body").on("click", "#removeExample", function() {
     //console.log(sequenceArr.slice(i,1));
     var exampleId = this.parentNode.id
-    console.log(exampleId);
+    console.log($("#"+exampleId).children()[0].id );
+
     var splitStr = exampleId.split('_')
-    console.log("splitStr", splitStr[1]);
-    console.log("sequenceArr", sequenceArr.indexOf(Number(splitStr[1])));
+    // console.log(this.parentNode.children[0].text());
     var exampleIndex= sequenceArr.indexOf(Number(splitStr[1]))
-    sequenceArr.slice(exampleIndex,1);
-    console.log(sequenceArr);
+    console.log(exampleIndex);
+    sequenceArr.splice(exampleIndex,1);
+    for(var i=exampleIndex+1; i<number; i++) {
+      $("#number_"+i).text(i-1)
+    }
     this.parentNode.remove();
 
   });
