@@ -4,17 +4,35 @@ MYAPP.exampleNumber = 1;
 MYAPP.sequenceArr = new Array(new Array());
 MYAPP.sequenceArr[1] = new Array()
 
-$(document).ready(function(){
-  $("#removeQuestion").click(function(){
-    $(".question:last").remove();
+$(document).ready(function() {
+  $("body").on("click", "#removeQuestion", function() {
+  //$("#removeQuestion").click(function() {
+    var questionNumber = this.parentNode.parentNode.id.split('_')[1];
+    var questionNumberIndex= MYAPP.sequenceArr.indexOf(Number(questionNumber))
+    MYAPP.sequenceArr.splice(questionNumberIndex,1);
+    this.parentNode.parentNode.remove();
+    console.log(MYAPP.sequenceArr);
+    for(var i=questionNumberIndex; i<MYAPP.sequenceArr.length; i++) {
+      $("#questionNumberText_"+MYAPP.sequenceArr[i]).text(i+1)
+    }
+
+    // var exampleIndex= MYAPP.sequenceArr[questionNumber].indexOf(Number(exampleId))
+    // console.log(exampleIndex);
+    // MYAPP.sequenceArr[questionNumber].splice(exampleIndex,1);
+    // console.log(MYAPP.sequenceArr);
+    // this.parentNode.remove();
+    // for(var i=exampleIndex; i<MYAPP.sequenceArr[questionNumber].length; i++) {
+    //   $("#number_"+MYAPP.sequenceArr[questionNumber][i]).text(i+1)
+    // }
+
   })
-  $("#addQuestion").click(function(){
+  $("#addQuestion").click(function() {
     var questionNumber = MYAPP.questionNumber;
     MYAPP.sequenceArr[questionNumber] = new Array();
     var question = `<div id="question_${questionNumber}" class="question">
-      <label>${questionNumber}번</label>
-      <button type="button" class="btn btn-lg btn-danger btn-xs" id="removeQuestion">문제삭제</button>
+      <label id="questionNumberText_${questionNumber}">${questionNumber}번</label>
       <div class="container-fluid text-center">
+        <button type="button" class="btn btn-lg btn-danger btn-xs" id="removeQuestion">문제삭제</button>
         <label class="radio-inline">
             <input type="radio" id="question_type" name="question_type_${questionNumber}"
                 value="multiple_choice_${questionNumber}">객관식
@@ -36,8 +54,6 @@ $(document).ready(function(){
 
   })
   $("body").on("change", "input[id=question_type]", function() {
-    // TODO 객관식 -> 주관식, 주관식->객관식 타입 바뀌면 보기 문항 초기화 (경고표시 띄워주기)
-
     var questionNumber = $(this).val().split('_')[2]
     if($(this).val() == 'multiple_choice_'+questionNumber) {
       MYAPP.sequenceArr[questionNumber] = new Array()
@@ -80,7 +96,7 @@ $(document).ready(function(){
     //console.log('test2',questionNumber);
     var example =
       `<div id="example_${MYAPP.exampleNumber}">
-              <label id="number_${MYAPP.exampleNumber}"></label>
+              <label id="exampleNumberText_${MYAPP.exampleNumber}"></label>
               <input id="exampleAnswer_${MYAPP.exampleNumber}" name="checkAnswer" type="checkbox" />
               <input id="exampleText_${MYAPP.exampleNumber}" name="exampleContent" type="text">
               <button type="button" id="removeExample" class="btn btn-lg btn-danger btn-xs">삭제</button>
@@ -89,7 +105,7 @@ $(document).ready(function(){
     var index = MYAPP.sequenceArr[questionNumber].indexOf(Number(MYAPP.exampleNumber))+1
     console.log("2차원",MYAPP.sequenceArr);
     $("#examples_"+questionNumber).append(example);
-    $("#number_"+MYAPP.exampleNumber).text(index)
+    $("#exampleNumberText_"+MYAPP.exampleNumber).text(index)
     console.log(MYAPP.sequenceArr);
     MYAPP.exampleNumber++;
   });
@@ -110,7 +126,7 @@ $(document).ready(function(){
     console.log(MYAPP.sequenceArr);
     this.parentNode.remove();
     for(var i=exampleIndex; i<MYAPP.sequenceArr[questionNumber].length; i++) {
-      $("#number_"+MYAPP.sequenceArr[questionNumber][i]).text(i+1)
+      $("#exampleNumberText_"+MYAPP.sequenceArr[questionNumber][i]).text(i+1)
     }
   });
 

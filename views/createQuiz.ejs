@@ -10,7 +10,10 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
         body > div > form {
-            font-size: 1.5em;
+          font-size: 1.5em;
+        }
+        #removeQuestion {
+          float: right;
         }
     </style>
 
@@ -24,11 +27,9 @@
   </div>
   <div class="questions">
     <div id="question_1">
-      <label>1번</label>
-      <div class="span10">
-        <button type="button" class="btn btn-lg btn-danger btn-xs" id="removeQuestion">문제삭제</button>
-      </div>
+      <label id="questionNumberText_1">1번</label>
       <div class="container-fluid text-center">
+        <button type="button" class="btn btn-lg btn-danger btn-xs" id="removeQuestion">문제삭제</button>
         <label class="radio-inline">
             <input type="radio" id="question_type" name="question_type_1" value="multiple_choice_1">객관식
         </label>
