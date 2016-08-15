@@ -25,6 +25,9 @@
   <div class="questions">
     <div id="question_1">
       <label>1번</label>
+      <div class="span10">
+        <button type="button" class="btn btn-lg btn-danger btn-xs" id="removeQuestion">문제삭제</button>
+      </div>
       <div class="container-fluid text-center">
         <label class="radio-inline">
             <input type="radio" id="question_type" name="question_type_1" value="multiple_choice_1">객관식
@@ -38,7 +41,6 @@
   </div>
   <hr>
   <button type="button" class="btn btn-lg btn-info btn-sm" id="addQuestion">문제추가</button>
-  <button type="button" class="btn btn-lg btn-info btn-sm" id="removeQuestion">문제삭제</button>
   <button type="button" id="saveQuestion"class="btn btn-lg btn-info btn-sm" name="saveQuestion">저장하기</button>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="/js/quiz/createQuiz/createQuiz.js"></script>
