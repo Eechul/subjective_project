@@ -1,38 +1,48 @@
 MYAPP = {}
-MYAPP.questionNumber = 2;
+MYAPP.questionNumber = 1;
 MYAPP.exampleNumber = 1;
-MYAPP.sequenceArr = new Array(new Array());
-MYAPP.sequenceArr[1] = new Array()
+MYAPP.sequenceArr = []
+MYAPP.sequenceArr[0] = {
+  number : 1,
+  example : []
+}
+//TODO : 문제 출제시, 도움말 추가.
+//TODO : 코드중복 많음, 정리 요망
+// 예) 1. map을 이용한 인덱스 추출, 2. function() < 묶어서 표현
+// - 각종 중복 코드 하나로 묶어보기
+// 현재 진행상황 -> 객관식, 주관식 자바스크립트를 이용해 동적인 문제 출제
+// 할것 -1. 객관-> 주관식 혹은 반대로 넘어갈때, 보기가 지워진다는 경고 메세지 출력
+// 2. 주석
+// 3. 레이아웃 통일 시키기 (기존 html과 자바스크립트 html)
 
-$(document).ready(function() {
+
+$(document).ready(function(){
   $("body").on("click", "#removeQuestion", function() {
-  //$("#removeQuestion").click(function() {
-    var questionNumber = this.parentNode.parentNode.id.split('_')[1];
-    var questionNumberIndex= MYAPP.sequenceArr.indexOf(Number(questionNumber))
-    MYAPP.sequenceArr.splice(questionNumberIndex,1);
-    this.parentNode.parentNode.remove();
-    console.log(MYAPP.sequenceArr);
-    for(var i=questionNumberIndex; i<MYAPP.sequenceArr.length; i++) {
-      $("#questionNumberText_"+MYAPP.sequenceArr[i]).text(i+1)
+    var questionNumber = this.parentNode.id.split('_')[1];
+    var questionIndex = MYAPP.sequenceArr.map(function(e) {
+      return e.number;
+    }).indexOf(Number(questionNumber)) // 인덱스 추출
+    MYAPP.sequenceArr.splice(questionIndex,1) // 배열 삭제
+    this.parentNode.remove() // 노드(html) 삭제
+    for(var i=questionIndex; i<MYAPP.sequenceArr.length; i++) {
+      $("#questionNumber_"+MYAPP.sequenceArr[i].number).text(i+1+'번')
     }
+  });
 
-    // var exampleIndex= MYAPP.sequenceArr[questionNumber].indexOf(Number(exampleId))
-    // console.log(exampleIndex);
-    // MYAPP.sequenceArr[questionNumber].splice(exampleIndex,1);
-    // console.log(MYAPP.sequenceArr);
-    // this.parentNode.remove();
-    // for(var i=exampleIndex; i<MYAPP.sequenceArr[questionNumber].length; i++) {
-    //   $("#number_"+MYAPP.sequenceArr[questionNumber][i]).text(i+1)
-    // }
-
-  })
-  $("#addQuestion").click(function() {
-    var questionNumber = MYAPP.questionNumber;
-    MYAPP.sequenceArr[questionNumber] = new Array();
+  $("#addQuestion").click(function(){
+    var questionNumber = ++MYAPP.questionNumber //전체 문제수 '증가시킨 후' 대입
+    var question = {
+      number : questionNumber,
+      example : []
+    }
+    MYAPP.sequenceArr.push(question);
+    var number = MYAPP.sequenceArr.map(function(e) {
+      return e.number;
+    }).indexOf(Number(questionNumber))+1 // 인덱스 추출
     var question = `<div id="question_${questionNumber}" class="question">
-      <label id="questionNumberText_${questionNumber}">${questionNumber}번</label>
+      <label id="questionNumber_${questionNumber}">${number}번</label>
+      <button type="button" class="btn btn-lg btn-danger btn-xs" id="removeQuestion">문제삭제</button>
       <div class="container-fluid text-center">
-        <button type="button" class="btn btn-lg btn-danger btn-xs" id="removeQuestion">문제삭제</button>
         <label class="radio-inline">
             <input type="radio" id="question_type" name="question_type_${questionNumber}"
                 value="multiple_choice_${questionNumber}">객관식
@@ -47,16 +57,20 @@ $(document).ready(function() {
     `
 
     $(".questions").append(question)
-    MYAPP.questionNumber++
   });
 
   $("#saveQuestion").click(function() {
-
+    // ajax를 이용해 데이터베이스에 세이브
   })
   $("body").on("change", "input[id=question_type]", function() {
+    // TODO 객관식 -> 주관식, 주관식->객관식 타입 바뀌면 보기 문항 초기화 (경고표시 띄워주기)
+    // TODO 맨 마지막에 수정
     var questionNumber = $(this).val().split('_')[2]
+    var questionIndex = MYAPP.sequenceArr.map(function(e) {
+      return e.number;
+    }).indexOf(Number(questionNumber)) // 인덱스 추출
     if($(this).val() == 'multiple_choice_'+questionNumber) {
-      MYAPP.sequenceArr[questionNumber] = new Array()
+      MYAPP.sequenceArr[questionIndex].example = []
       $('#short_answer_'+questionNumber).remove()
       $('#question_type_load_'+questionNumber).append(`
         <div id="multiple_choice_${questionNumber}" class="container-fluid">
@@ -72,7 +86,7 @@ $(document).ready(function() {
         `);
     }
     else if($(this).val() == 'short_answer_'+questionNumber) {
-      MYAPP.sequenceArr[questionNumber] = new Array()
+      MYAPP.sequenceArr[questionIndex].example = []
       $('#multiple_choice_'+questionNumber).remove()
       $('#question_type_load_'+questionNumber).append(`
         <div id="short_answer_${questionNumber}" class="container-fluid">
@@ -82,7 +96,7 @@ $(document).ready(function() {
               </div>
               <div class="form-group">
                   <label for="답안">답안</label>
-                  <div id="answers"></div>
+                  <div id="answers_${questionNumber}"></div>
               </div>
               <div class="container-fluid">
                 <button type="button" id="addAnswer" class="btn btn-lg btn-info btn-xs" >유사답안추가</button>
@@ -91,42 +105,76 @@ $(document).ready(function() {
         `)
     }
   })
+  $("body").on("click", "#addAnswer", function() {
+    var questionNumber = this.parentNode.parentNode.id.split('_')[2];
+    var questionIndex = MYAPP.sequenceArr.map(function(e) {
+      return e.number;
+    }).indexOf(Number(questionNumber)) // 인덱스 추출
+    console.log(questionIndex);
+    MYAPP.sequenceArr[questionIndex].example.push(MYAPP.exampleNumber)
+    var number = MYAPP.sequenceArr[questionIndex].example.indexOf(Number(MYAPP.exampleNumber))+1
+    var answer =
+      `<div id="answer_${MYAPP.exampleNumber}">
+        <label id="answerNumber_${MYAPP.exampleNumber}">${number}.</label>
+        <input id="answer_${MYAPP.exampleNumber}" name="exampleContent" type="text">
+        <button type="button" id="removeAnswer" class="btn btn-lg btn-danger btn-xs">삭제</button>
+      </div>`
+    $("#answers_"+questionNumber).append(answer);
+    MYAPP.exampleNumber++;
+  });
+  $("body").on("click", "#removeAnswer", function() {
+    var questionNumber = this.parentNode.parentNode.id.split('_')[1]
+    var questionIndex = MYAPP.sequenceArr.map(function(e) {
+      return e.number;
+    }).indexOf(Number(questionNumber))
+    console.log(questionNumber);
+    var answerId  = this.parentNode.id.split('_')[1]
+    var answerIndex= MYAPP.sequenceArr[questionIndex].example.indexOf(Number(answerId))
+    console.log(answerId);
+    MYAPP.sequenceArr[questionIndex].example.splice(answerIndex,1);
+    console.log(MYAPP.sequenceArr);
+    this.parentNode.remove();
+    for(var i=answerIndex; i<MYAPP.sequenceArr[questionIndex].example.length; i++) {
+      $("#answerNumber_"+MYAPP.sequenceArr[questionIndex].example[i]).text(i+1+".")
+    }
+  });
+
   $("body").on("click", "#addExample", function() {
     var questionNumber = this.parentNode.parentNode.id.split('_')[2];
-    //console.log('test2',questionNumber);
+    var questionIndex = MYAPP.sequenceArr.map(function(e) {
+      return e.number;
+    }).indexOf(Number(questionNumber)) // 인덱스 추출
+    MYAPP.sequenceArr[questionIndex].example.push(MYAPP.exampleNumber)
+    var number = MYAPP.sequenceArr[questionIndex].example.indexOf(Number(MYAPP.exampleNumber))+1
     var example =
       `<div id="example_${MYAPP.exampleNumber}">
-              <label id="exampleNumberText_${MYAPP.exampleNumber}"></label>
+              <label id="exampleNumber_${MYAPP.exampleNumber}">${number}.</label>
               <input id="exampleAnswer_${MYAPP.exampleNumber}" name="checkAnswer" type="checkbox" />
               <input id="exampleText_${MYAPP.exampleNumber}" name="exampleContent" type="text">
               <button type="button" id="removeExample" class="btn btn-lg btn-danger btn-xs">삭제</button>
       </div>`
-    MYAPP.sequenceArr[questionNumber].push(MYAPP.exampleNumber)
-    var index = MYAPP.sequenceArr[questionNumber].indexOf(Number(MYAPP.exampleNumber))+1
-    console.log("2차원",MYAPP.sequenceArr);
+
     $("#examples_"+questionNumber).append(example);
-    $("#exampleNumberText_"+MYAPP.exampleNumber).text(index)
+    //$("#exampleNumber_"+MYAPP.exampleNumber).text(number)
     console.log(MYAPP.sequenceArr);
     MYAPP.exampleNumber++;
   });
   $("body").on("click", "#removeExample", function() {
-    //1. '삭제'버튼의 부모노드는 찾는다.
-    //2. 부모노드의 id값을 split을 이용해 추출
-    //3. 그 아이디값을 sequenceArr 배열에서 index를 찾는데 사용
-    //4. sequenceArr 배열에서 아이디값을 삭제
-    //5. 부모노드를 삭제
-    //6. 삭제고 난 후의 sequenceArr 배열에 맞게 순서 정렬
-    //=> index: 보기의 번호, 값: 태그의 아이디값
-    // (수정) 자료구조 = 1차원 배열 -> 2차원 배열
+
+    // (수정) 자료구조 = 1차원 배열 -> 2차원 배열 -> 1차원 배열+객체 var arr = [ { }, ... ]
     var questionNumber = this.parentNode.parentNode.id.split('_')[1]
+    var questionIndex = MYAPP.sequenceArr.map(function(e) {
+      return e.number;
+    }).indexOf(Number(questionNumber))
+
     var exampleId  = this.parentNode.id.split('_')[1]
-    var exampleIndex= MYAPP.sequenceArr[questionNumber].indexOf(Number(exampleId))
+    var exampleIndex= MYAPP.sequenceArr[questionIndex].example.indexOf(Number(exampleId))
     console.log(exampleIndex);
-    MYAPP.sequenceArr[questionNumber].splice(exampleIndex,1);
+    MYAPP.sequenceArr[questionIndex].example.splice(exampleIndex,1);
     console.log(MYAPP.sequenceArr);
     this.parentNode.remove();
-    for(var i=exampleIndex; i<MYAPP.sequenceArr[questionNumber].length; i++) {
-      $("#exampleNumberText_"+MYAPP.sequenceArr[questionNumber][i]).text(i+1)
+    for(var i=exampleIndex; i<MYAPP.sequenceArr[questionIndex].example.length; i++) {
+      $("#exampleNumber_"+MYAPP.sequenceArr[questionIndex].example[i]).text(i+1+".")
     }
   });
 
