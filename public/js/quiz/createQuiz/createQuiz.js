@@ -1,20 +1,35 @@
 MYAPP = {};
+MYAPP.allScore = 0;
 MYAPP.questionNumber = 1;
 MYAPP.exampleNumber = 1;
-MYAPP.sequenceArr = []
+MYAPP.sequenceArr = [];
 MYAPP.sequenceArr[0] = {
   number : 1,
-  example : []
+  example : [0],
+  answer : [],
+  score : 0
 };
-//TODO : 문제 출제시, 도움말 추가.
-//TODO : 코드중복 많음, 정리 요망
-// 예) 1. map을 이용한 인덱스 추출, 2. function() < 묶어서 표현
-// - 각종 중복 코드 하나로 묶어보기
-// 현재 진행상황 -> 객관식, 주관식 자바스크립트를 이용해 동적인 문제 출제
-// 할것 -1. 객관-> 주관식 혹은 반대로 넘어갈때, 보기가 지워진다는 경고 메세지 출력
-// 2. 주석
-// 3. 레이아웃 통일 시키기 (기존 html과 자바스크립트 html)
+// example 프로퍼티의 자료구조
+// example[i] = {
+//   number : 고유 exampleNumber
+//   checked : 'true' and 'false'
+// }
+
+// TODO : 문제 출제시, 도움말 추가.
+// TODO : 객관식 출제 먼저!
+// 부분점수 알고리즘 생각해내기 현재는 통합 점수만 생각해놈.
+// 객관-> 주관식 혹은 반대로 넘어갈때, 보기가 지워진다는 경고 메세지 출력
+// 주석
+// 레이아웃 통일 시키기 (기존 html과 자바스크립트 html)
+
+// 교수가 객관식마다 부분점수 있나 없나도 정할수 있게
+//객관식
+// - 체크박스 클릭 -> 체크개수 증가와 '체크한 보기번호' : input text 박스' 동적출력
+
+// 문제점수 /(나누기) 체크개수 로 문제당 부분 점수 출력
 $(document).ready(function(){
+  $("body").on("change", "input[name=checkAnswer]", checkedExample);
+
   // 문제 삭제
   $("body").on("click", "#removeQuestion", removeQuestion);
   //문제 추가
@@ -39,26 +54,41 @@ $(document).ready(function(){
   $("body").on("blur", "input[name=exampleContent]", function() {
     $(this).removeAttr('size');
   });
+
 });
 
+var writeScore = function (obj) {
+  // 알고리즘
+  // onchange 될때마다 순서배열 안에있는 번호를 통해
+  // 합계를 통합적으로 구해준다.
+  MYAPP.allScore += Number(obj.value);
+  $("#allScore").text(MYAPP.allScore);
+};
+var getIndex = function(number) {
+  return MYAPP.sequenceArr.map(function(e) {
+    return e.number;
+  }).indexOf(Number(number));
+};
+function checkedExample () {
+    var questionNumber = this.parentNode.parentNode.id.split("_")[1];
+    var exampleNumber = $(this).attr("id").split("_")[1];
+    console.log(questionNumber, exampleNumber);
+
+}
 function saveQuestion() {
   // 로그로 test
   // 'question_'+YAPP.sequenceArr[i].number 문제 안에서
   // 객관식 or 주관식 문제와 보기들을 읽어옴
   // for 1
-  var quiz = MYAPP.sequenceArr.map( function(question, i) {
+  var quiz = MYAPP.sequenceArr.map(function(question, i) {
     return question;
   });
-
-  console.log(quiz);
 }
 
 
 function removeQuestion() {
   var questionNumber = this.parentNode.id.split('_')[1];
-  var questionIndex = MYAPP.sequenceArr.map(function(e) {
-    return e.number;
-}).indexOf(Number(questionNumber)); // 인덱스 추출
+  var questionIndex = getIndex(questionNumber); // 인덱스 추출
   MYAPP.sequenceArr.splice(questionIndex,1);// 배열 삭제
   this.parentNode.remove();// 노드(html) 삭제
   for(var i=questionIndex; i<MYAPP.sequenceArr.length; i++) {
@@ -73,9 +103,7 @@ function addQuestion() {
     example : []
   };
   MYAPP.sequenceArr.push(question);
-  var number = MYAPP.sequenceArr.map(function(e) {
-    return e.number;
-  }).indexOf(Number(questionNumber))+1; // 인덱스 추출
+  var number = getIndex(questionNumber)+1; // 인덱스 추출
   var question = `<div id="question_${questionNumber}" class="question">
     <label id="questionNumber_${questionNumber}">${number}번</label>
     <button type="button" class="btn btn-lg btn-danger btn-xs" id="removeQuestion">문제삭제</button>
@@ -100,9 +128,7 @@ function changeQuestionType() {
   // TODO 객관식 -> 주관식, 주관식->객관식 타입 바뀌면 보기 문항 초기화 (경고표시 띄워주기)
   // TODO 맨 마지막에 수정
   var questionNumber = $(this).val().split('_')[2];
-  var questionIndex = MYAPP.sequenceArr.map(function(e) {
-    return e.number;
-  }).indexOf(Number(questionNumber)); // 인덱스 추출
+  var questionIndex = getIndex(questionNumber); // 인덱스 추출
   if($(this).val() == 'multiple_choice_'+questionNumber) {
     MYAPP.sequenceArr[questionIndex].example = [];
     $('#short_answer_'+questionNumber).remove();
@@ -136,15 +162,13 @@ function changeQuestionType() {
               <button type="button" id="addAnswer" class="btn btn-lg btn-info btn-xs" >유사답안추가</button>
             </div>
       </div>
-      `)
+      `);
   }
 }
 
 function addAnswer() {
   var questionNumber = this.parentNode.parentNode.id.split('_')[2];
-  var questionIndex = MYAPP.sequenceArr.map(function(e) {
-    return e.number;
-  }).indexOf(Number(questionNumber)); // 인덱스 추출
+  var questionIndex = getIndex(questionNumber); // 인덱스 추출
   console.log(questionIndex);
   MYAPP.sequenceArr[questionIndex].example.push(MYAPP.exampleNumber);
   var number = MYAPP.sequenceArr[questionIndex].example.indexOf(Number(MYAPP.exampleNumber))+1;
@@ -160,28 +184,24 @@ function addAnswer() {
 
 function removeAnswer() {
   var questionNumber = this.parentNode.parentNode.id.split('_')[1];
-  var questionIndex = MYAPP.sequenceArr.map(function(e) {
-    return e.number;
-  }).indexOf(Number(questionNumber));
-  console.log(questionNumber);
+  var questionIndex = getIndex(questionNumber);
   var answerId  = this.parentNode.id.split('_')[1];
   var answerIndex= MYAPP.sequenceArr[questionIndex].example.indexOf(Number(answerId));
-  console.log(answerId);
   MYAPP.sequenceArr[questionIndex].example.splice(answerIndex,1);
-  console.log(MYAPP.sequenceArr);
   this.parentNode.remove();
   for(var i=answerIndex; i<MYAPP.sequenceArr[questionIndex].example.length; i++) {
     $("#answerNumber_"+MYAPP.sequenceArr[questionIndex].example[i]).text(i+1+".");
   }
 }
-
 function addExample() {
   var questionNumber = this.parentNode.parentNode.id.split('_')[2];
-  var questionIndex = MYAPP.sequenceArr.map(function(e) {
-    return e.number;
-  }).indexOf(Number(questionNumber)); // 인덱스 추출
-  MYAPP.sequenceArr[questionIndex].example.push(MYAPP.exampleNumber);
-  var number = MYAPP.sequenceArr[questionIndex].example.indexOf(Number(MYAPP.exampleNumber))+1;
+  var questionIndex = getIndex(questionNumber); // 인덱스 추출
+  var exampleObj = {
+    number : MYAPP.exampleNumber,
+    checked : false
+  };
+  MYAPP.sequenceArr[questionIndex].example.push(exampleObj);
+  var number = MYAPP.sequenceArr[questionIndex].example.indexOf(exampleObj)+1;
   var example =
     `<div id="example_${MYAPP.exampleNumber}">
             <label id="exampleNumber_${MYAPP.exampleNumber}">${number}.</label>
@@ -196,15 +216,27 @@ function addExample() {
   MYAPP.exampleNumber++;
 }
 
+// TODO 수정중 08/22
 function removeExample() {
-  // (수정) 자료구조 = 1차원 배열 -> 2차원 배열 -> 1차원 배열+객체 var arr = [ { }, ... ]
   var questionNumber = this.parentNode.parentNode.id.split('_')[1];
-  var questionIndex = MYAPP.sequenceArr.map(function(e) {
-    return e.number;
-  }).indexOf(Number(questionNumber));
-
+  var questionIndex = getIndex(questionNumber);
   var exampleId  = this.parentNode.id.split('_')[1];
-  var exampleIndex= MYAPP.sequenceArr[questionIndex].example.indexOf(Number(exampleId));
+  var a = MYAPP.sequenceArr[questionIndex].example
+    .map(function(e,i) {
+      if(e.number == exampleId) {
+        console.log(e.number);
+        return e.number;
+      }
+      //return e.number === Number(exampleId) ?  // Number(exampleId)
+    });
+    console.log(a);
+  // var exampleIndex= MYAPP.sequenceArr[questionIndex].example
+  //   .indexOf(
+  //
+  //   );
+
+
+    // Number(exampleId)
   console.log(exampleIndex);
   MYAPP.sequenceArr[questionIndex].example.splice(exampleIndex,1);
   console.log(MYAPP.sequenceArr);

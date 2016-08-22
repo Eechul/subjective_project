@@ -15,6 +15,12 @@
         #removeQuestion {
           float : right;
         }
+        .question_mid {
+          float : center;
+        }
+        .allScore {
+          font-size: 2.5em
+        }
     </style>
 
 </head>
@@ -25,10 +31,17 @@
         <h1>Quiz Create</h1>
     </div>
   </div>
+  <div>
+    <label class="allScore">총 점수:</label><span class="allScore" id="allScore">0</span>
+  </div>
   <div class="questions">
     <div id="question_1">
       <label>1번</label>
-        <button type="button" class="btn btn-lg btn-danger btn-xs" id="removeQuestion">문제삭제</button>
+      <span class="question_mid">
+        <label>점수:</label>
+        <input type="text" size="2em" id="questionScore_1" name="questionScore" onchange="writeScore(this)" value="0"/>
+      </span>
+      <button type="button" class="btn btn-lg btn-danger btn-xs" id="removeQuestion">문제삭제</button>
       <div class="container-fluid text-center">
         <label class="radio-inline">
             <input type="radio" id="question_type" name="question_type_1" value="multiple_choice_1">객관식
@@ -44,6 +57,7 @@
   <button type="button" class="btn btn-lg btn-info btn-sm" id="addQuestion">문제추가</button>
   <button type="button" id="saveQuestion"class="btn btn-lg btn-info btn-sm" name="saveQuestion">저장하기</button>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="/js/quiz/createQuiz/createQuizFunction.js"></script>
   <script src="/js/quiz/createQuiz/createQuiz.js"></script>
 </body>
 
