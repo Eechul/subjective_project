@@ -38,8 +38,12 @@
     <div id="question_1">
       <label>1번</label>
       <span class="question_mid">
-        <label>점수:</label>
+        <label>점수: </label>
         <input type="text" size="2em" id="questionScore_1" name="questionScore" onchange="writeScore(this)" value="0"/>
+      </span>
+      <span class="question_mid">
+        <label>체크 갯수: </label>
+        <strong id="questionAnswerNumber_1">0</strong>
       </span>
       <button type="button" class="btn btn-lg btn-danger btn-xs" id="removeQuestion">문제삭제</button>
       <div class="container-fluid text-center">

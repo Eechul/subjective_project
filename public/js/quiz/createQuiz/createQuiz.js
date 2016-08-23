@@ -70,10 +70,28 @@ var getIndex = function(number) {
   }).indexOf(Number(number));
 };
 function checkedExample () {
+    var checkedNumber =0;
     var questionNumber = this.parentNode.parentNode.id.split("_")[1];
+    var questionIndex = getIndex(questionNumber);
     var exampleNumber = $(this).attr("id").split("_")[1];
-    console.log(questionNumber, exampleNumber);
+    var exampleId  = this.parentNode.id.split('_')[1];
+    var exampleIndex;
+    MYAPP.sequenceArr[questionIndex].example.forEach( function(obj, index) {
+      if(obj.number == exampleId) {
+        obj.checked = obj.checked ? false : true;
+        console.log(MYAPP.sequenceArr[questionIndex].example[index]);
+        return ;
+      }
+    });
 
+    // 체크 개수 세는 부분
+    MYAPP.sequenceArr[questionIndex].example.forEach( function(obj, index) {
+      if(obj.checked === true) {
+        checkedNumber++;
+      }
+    });
+
+    $("#questionAnswerNumber_"+questionNumber).text(checkedNumber);
 }
 function saveQuestion() {
   // 로그로 test
@@ -221,27 +239,17 @@ function removeExample() {
   var questionNumber = this.parentNode.parentNode.id.split('_')[1];
   var questionIndex = getIndex(questionNumber);
   var exampleId  = this.parentNode.id.split('_')[1];
-  var a = MYAPP.sequenceArr[questionIndex].example
-    .map(function(e,i) {
-      if(e.number == exampleId) {
-        console.log(e.number);
-        return e.number;
-      }
-      //return e.number === Number(exampleId) ?  // Number(exampleId)
-    });
-    console.log(a);
-  // var exampleIndex= MYAPP.sequenceArr[questionIndex].example
-  //   .indexOf(
-  //
-  //   );
-
-
-    // Number(exampleId)
-  console.log(exampleIndex);
+  var exampleIndex;
+  MYAPP.sequenceArr[questionIndex].example.forEach( function(obj, index) {
+    if(obj.number == exampleId) {
+      exampleIndex = index;
+      return ;
+    }
+  });
   MYAPP.sequenceArr[questionIndex].example.splice(exampleIndex,1);
   console.log(MYAPP.sequenceArr);
   this.parentNode.remove();
   for(var i=exampleIndex; i<MYAPP.sequenceArr[questionIndex].example.length; i++) {
-    $("#exampleNumber_"+MYAPP.sequenceArr[questionIndex].example[i]).text(i+1+".");
+    $("#exampleNumber_"+MYAPP.sequenceArr[questionIndex].example[i].number).text(i+1+".");
   }
 }
