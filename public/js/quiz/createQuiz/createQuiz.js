@@ -54,8 +54,14 @@ $(document).ready(function(){
   $("body").on("blur", "input[name=exampleContent]", function() {
     $(this).removeAttr('size');
   });
-
+  $("body").on("click", "#partScore", checkePartScore);
 });
+
+var checkePartScore = function () {
+  var questionNumber = this.parentNode.parentNode.id.split("_")[2];
+  console.log(questionNumber);
+  // 이게 체크되면 display : none 인 input text 드러내기
+};
 
 var writeScore = function (obj) {
   // 알고리즘
@@ -159,6 +165,7 @@ function changeQuestionType() {
         <div class="container-fluid">
           <div id="examples_${questionNumber}"></div>
           <button type="button" id="addExample" class="btn btn-lg btn-info btn-xs" >보기추가</button>
+          <input type="checkbox" id="partScore"  name="part_score"/>부분점수여부
         </div>
       </div>
       `);
@@ -226,7 +233,14 @@ function addExample() {
             <input id="exampleAnswer_${MYAPP.exampleNumber}" name="checkAnswer" type="checkbox" />
             <input id="exampleText_${MYAPP.exampleNumber}" name="exampleContent" type="text">
             <button type="button" id="removeExample" class="btn btn-lg btn-danger btn-xs">삭제</button>
-    </div>`;
+    </div>
+    <span class="examplePartScore_${MYAPP.exampleNumber}" style="DISPLAY: none;">
+      <label>ㄴ 부분점수:</label>
+      <input type="text" id="examplePartScore_${MYAPP.exampleNumber}" name="" size="5"/>
+    </span>
+    `
+
+    ;
 
   $("#examples_"+questionNumber).append(example);
   //$("#exampleNumber_"+MYAPP.exampleNumber).text(number)
