@@ -7,7 +7,10 @@ MYAPP.sequenceArr[0] = {
   number : 1,
   example : [0],
   answer : [],
-  score : 0
+  score : 0,
+  option : {
+    partScore : false
+  }
 };
 // example 프로퍼티의 자료구조
 // example[i] = {
@@ -60,6 +63,17 @@ $(document).ready(function(){
 var checkePartScore = function () {
   var questionNumber = this.parentNode.parentNode.id.split("_")[2];
   console.log(questionNumber);
+  var questionIndex = getIndex(questionNumber);
+  // var 
+  // MYAPP.sequenceArr[questionIndex].example.map(function (e, i ){
+  //
+  // });
+    MYAPP.sequenceArr[questionIndex].option.partScore =
+      MYAPP.sequenceArr[questionIndex].option.partScore ? false : true ;
+
+    if(MYAPP.sequenceArr[questionIndex].option.partScore) {
+      var exampleId = MYAPP.sequenceArr[questionIndex].example
+    }
   // 이게 체크되면 display : none 인 input text 드러내기
 };
 
@@ -233,14 +247,15 @@ function addExample() {
             <input id="exampleAnswer_${MYAPP.exampleNumber}" name="checkAnswer" type="checkbox" />
             <input id="exampleText_${MYAPP.exampleNumber}" name="exampleContent" type="text">
             <button type="button" id="removeExample" class="btn btn-lg btn-danger btn-xs">삭제</button>
-    </div>
-    <span class="examplePartScore_${MYAPP.exampleNumber}" style="DISPLAY: none;">
-      <label>ㄴ 부분점수:</label>
-      <input type="text" id="examplePartScore_${MYAPP.exampleNumber}" name="" size="5"/>
-    </span>
-    `
+    </div>`;
+    if(MYAPP.sequenceArr[questionIndex].option.partScore) {
+      example +=
+      `<span class="examplePartScore_${MYAPP.exampleNumber} style="display : inline" >
+        <label>ㄴ 부분점수:</label>
+        <input type="text" id="examplePartScore_${MYAPP.exampleNumber}" name="" size="5"/>
+      </span>`;
+    }
 
-    ;
 
   $("#examples_"+questionNumber).append(example);
   //$("#exampleNumber_"+MYAPP.exampleNumber).text(number)
