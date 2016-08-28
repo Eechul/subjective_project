@@ -27,7 +27,8 @@ MYAPP.sequenceArr[0] = {
 
 // 교수가 객관식마다 부분점수 있나 없나도 정할수 있게
 //객관식
-// - 체크박스 클릭 -> 체크개수 증가와 '체크한 보기번호' : input text 박스' 동적출력
+// 부분점수는 정답 체크 부분에서 이루어 지게.
+// 부분점수 박스 알고리즘 : if 부분점수여부 checked && 답안 checked
 
 // 문제점수 /(나누기) 체크개수 로 문제당 부분 점수 출력
 $(document).ready(function(){
@@ -64,17 +65,16 @@ var checkePartScore = function () {
   var questionNumber = this.parentNode.parentNode.id.split("_")[2];
   console.log(questionNumber);
   var questionIndex = getIndex(questionNumber);
-  // var 
+  // var
   // MYAPP.sequenceArr[questionIndex].example.map(function (e, i ){
   //
   // });
     MYAPP.sequenceArr[questionIndex].option.partScore =
       MYAPP.sequenceArr[questionIndex].option.partScore ? false : true ;
 
-    if(MYAPP.sequenceArr[questionIndex].option.partScore) {
-      var exampleId = MYAPP.sequenceArr[questionIndex].example
-    }
-  // 이게 체크되면 display : none 인 input text 드러내기
+    // if(MYAPP.sequenceArr[questionIndex].option.partScore) {
+    //   var exampleId = MYAPP.sequenceArr[questionIndex].example
+    // }
 };
 
 var writeScore = function (obj) {
@@ -269,15 +269,26 @@ function removeExample() {
   var questionIndex = getIndex(questionNumber);
   var exampleId  = this.parentNode.id.split('_')[1];
   var exampleIndex;
+  var checkedNumber=0;
   MYAPP.sequenceArr[questionIndex].example.forEach( function(obj, index) {
     if(obj.number == exampleId) {
       exampleIndex = index;
       return ;
     }
   });
+
+
   MYAPP.sequenceArr[questionIndex].example.splice(exampleIndex,1);
   console.log(MYAPP.sequenceArr);
   this.parentNode.remove();
+  // TODO: 체크 개수 세는 부분 함수 작성
+  MYAPP.sequenceArr[questionIndex].example.forEach( function(obj, index) {
+    if(obj.checked === true) {
+      checkedNumber++;
+    }
+  });
+
+  $("#questionAnswerNumber_"+questionNumber).text(checkedNumber);
   for(var i=exampleIndex; i<MYAPP.sequenceArr[questionIndex].example.length; i++) {
     $("#exampleNumber_"+MYAPP.sequenceArr[questionIndex].example[i].number).text(i+1+".");
   }
