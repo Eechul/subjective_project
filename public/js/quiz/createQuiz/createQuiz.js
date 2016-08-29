@@ -16,19 +16,15 @@ MYAPP.sequenceArr[0] = {
 // example[i] = {
 //   number : 고유 exampleNumber
 //   checked : 'true' and 'false'
+// (추가) score : 음수, 0을 제외한 숫자. 문자나 문자열 x
+// TODO : 08-29 = 체크한 부분점수 저장하는 자료구조  추가
 // }
-
 // TODO : 문제 출제시, 도움말 추가.
 // TODO : 객관식 출제 먼저!
 // 부분점수 알고리즘 생각해내기 현재는 통합 점수만 생각해놈.
 // 객관-> 주관식 혹은 반대로 넘어갈때, 보기가 지워진다는 경고 메세지 출력
 // 주석
 // 레이아웃 통일 시키기 (기존 html과 자바스크립트 html)
-
-// 교수가 객관식마다 부분점수 있나 없나도 정할수 있게
-//객관식
-// 부분점수는 정답 체크 부분에서 이루어 지게.
-// 부분점수 박스 알고리즘 : if 부분점수여부 checked && 답안 checked
 
 // 문제점수 /(나누기) 체크개수 로 문제당 부분 점수 출력
 $(document).ready(function(){
@@ -58,30 +54,44 @@ $(document).ready(function(){
   $("body").on("blur", "input[name=exampleContent]", function() {
     $(this).removeAttr('size');
   });
-  $("body").on("click", "#partScore", checkePartScore);
+  $("body").on("click", "#partScore", checkedPartScore);
 });
 
-var checkePartScore = function () {
+var checkedPartScore = function () {
   var questionNumber = this.parentNode.parentNode.id.split("_")[2];
   console.log(questionNumber);
   var questionIndex = getIndex(questionNumber);
-  // var
-  // MYAPP.sequenceArr[questionIndex].example.map(function (e, i ){
-  //
-  // });
-    MYAPP.sequenceArr[questionIndex].option.partScore =
-      MYAPP.sequenceArr[questionIndex].option.partScore ? false : true ;
 
-    // if(MYAPP.sequenceArr[questionIndex].option.partScore) {
-    //   var exampleId = MYAPP.sequenceArr[questionIndex].example
-    // }
+  MYAPP.sequenceArr[questionIndex].option.partScore =
+    MYAPP.sequenceArr[questionIndex].option.partScore ? false : true ;
+
+  if(MYAPP.sequenceArr[questionIndex].option.partScore) {
+    MYAPP.sequenceArr[questionIndex].example.forEach( function(obj, index) {
+      if(obj.checked) {
+        $(".examplePartScore_"+obj.number).css("display","block");
+      }
+    });
+  } else {
+    MYAPP.sequenceArr[questionIndex].example.forEach( function(obj, index) {
+      if(obj.checked) {
+        $(".examplePartScore_"+obj.number).css("display","none");
+      }
+    });
+  }
+
+};
+var writePartScore = function (__this) {
+  console.log(__this.id);
+  var exampleNumber = __this.id.split("_")[1];
+  // TODO
 };
 
-var writeScore = function (obj) {
+
+var writeScore = function (__this) {
   // 알고리즘
   // onchange 될때마다 순서배열 안에있는 번호를 통해
   // 합계를 통합적으로 구해준다.
-  MYAPP.allScore += Number(obj.value);
+  MYAPP.allScore += Number(__this.value);
   $("#allScore").text(MYAPP.allScore);
 };
 var getIndex = function(number) {
@@ -89,35 +99,32 @@ var getIndex = function(number) {
     return e.number;
   }).indexOf(Number(number));
 };
-function checkedExample () {
+function checkedExample() {
     var checkedNumber =0;
     var questionNumber = this.parentNode.parentNode.id.split("_")[1];
     var questionIndex = getIndex(questionNumber);
     var exampleNumber = $(this).attr("id").split("_")[1];
-    var exampleId  = this.parentNode.id.split('_')[1];
+    var exampleId = this.parentNode.id.split('_')[1];
     var exampleIndex;
     MYAPP.sequenceArr[questionIndex].example.forEach( function(obj, index) {
       if(obj.number == exampleId) {
         obj.checked = obj.checked ? false : true;
-        console.log(MYAPP.sequenceArr[questionIndex].example[index]);
+        if(MYAPP.sequenceArr[questionIndex].option.partScore &&
+            MYAPP.sequenceArr[questionIndex].example[index].checked) {
+          $(".examplePartScore_"+exampleNumber).css("display","block");
+        } else {
+          $(".examplePartScore_"+exampleNumber).css("display","none");
+        }
+      }
+      // 체크 개수 세는 부분
+      if(obj.checked === true) {
+        checkedNumber++;
         return ;
       }
     });
-
-    // 체크 개수 세는 부분
-    MYAPP.sequenceArr[questionIndex].example.forEach( function(obj, index) {
-      if(obj.checked === true) {
-        checkedNumber++;
-      }
-    });
-
     $("#questionAnswerNumber_"+questionNumber).text(checkedNumber);
 }
 function saveQuestion() {
-  // 로그로 test
-  // 'question_'+YAPP.sequenceArr[i].number 문제 안에서
-  // 객관식 or 주관식 문제와 보기들을 읽어옴
-  // for 1
   var quiz = MYAPP.sequenceArr.map(function(question, i) {
     return question;
   });
@@ -246,24 +253,20 @@ function addExample() {
             <label id="exampleNumber_${MYAPP.exampleNumber}">${number}.</label>
             <input id="exampleAnswer_${MYAPP.exampleNumber}" name="checkAnswer" type="checkbox" />
             <input id="exampleText_${MYAPP.exampleNumber}" name="exampleContent" type="text">
-            <button type="button" id="removeExample" class="btn btn-lg btn-danger btn-xs">삭제</button>
-    </div>`;
-    if(MYAPP.sequenceArr[questionIndex].option.partScore) {
+            <button type="button" id="removeExample" class="btn btn-lg btn-danger btn-xs"x>삭제</button>`;
+
       example +=
-      `<span class="examplePartScore_${MYAPP.exampleNumber} style="display : inline" >
-        <label>ㄴ 부분점수:</label>
-        <input type="text" id="examplePartScore_${MYAPP.exampleNumber}" name="" size="5"/>
-      </span>`;
-    }
+      `<span class="examplePartScore_${MYAPP.exampleNumber}" style="display : none" >
+        <label> ㄴ 부분점수:</label>
+        <input type="text" id="examplePartScore_${MYAPP.exampleNumber}" name="" onchange="writePartScore(this)" size="5" value="0"/>
+      </span>
+    </div>`;
 
 
   $("#examples_"+questionNumber).append(example);
-  //$("#exampleNumber_"+MYAPP.exampleNumber).text(number)
-  console.log(MYAPP.sequenceArr);
   MYAPP.exampleNumber++;
 }
 
-// TODO 수정중 08/22
 function removeExample() {
   var questionNumber = this.parentNode.parentNode.id.split('_')[1];
   var questionIndex = getIndex(questionNumber);
@@ -276,7 +279,6 @@ function removeExample() {
       return ;
     }
   });
-
 
   MYAPP.sequenceArr[questionIndex].example.splice(exampleIndex,1);
   console.log(MYAPP.sequenceArr);
