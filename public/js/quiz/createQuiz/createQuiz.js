@@ -81,12 +81,35 @@ var checkedPartScore = function () {
 
 };
 var writePartScore = function (__this) {
-  console.log(__this.id);
+  var questionNumber = __this.parentNode.parentNode.parentNode.id.split("_")[1];
+  var questionIndex = getIndex(questionNumber);
   var exampleNumber = __this.id.split("_")[1];
-  // TODO
+  var sumPartScore = 0;
+  MYAPP.sequenceArr[questionIndex].example.forEach( function(obj, index) {
+    if(obj.number == exampleNumber) {
+      MYAPP.sequenceArr[questionIndex].example[index].score = Number(__this.value);
+      console.log("writePartScore", MYAPP.sequenceArr[questionIndex].example[index]);
+      updateScore(__this);
+    }
+  });
 };
 
-
+var updateScore = function(__this) {
+  var questionNumber = __this.parentNode.parentNode.parentNode.id.split("_")[1];
+  var questionIndex = getIndex(questionNumber);
+  var exampleNumber = __this.id.split("_")[1];
+  var updateSumScore= 0; // 합계점수 변수
+  MYAPP.sequenceArr[questionIndex].example.forEach( function(obj, index) {
+    if(obj.checked) {
+      console.log("updateScore", obj);
+      updateSumScore += obj.score;
+    }
+  });
+  console.log("__this", __this.context);
+  $("#questionScore_"+questionNumber).val(updateSumScore);
+  console.log('  $("#questionScore"', $("#questionScore_"+questionNumber).context);
+  writeScore(__this);
+};
 var writeScore = function (__this) {
   // 알고리즘
   // onchange 될때마다 순서배열 안에있는 번호를 통해
@@ -145,12 +168,21 @@ function addQuestion() {
   var questionNumber = ++MYAPP.questionNumber; //전체 문제수 '증가시킨 후' 대입
   var question = {
     number : questionNumber,
-    example : []
+    example : [0],
+    answer : [],
+    score : 0,
+    option : {
+      partScore : false
+    }
   };
   MYAPP.sequenceArr.push(question);
   var number = getIndex(questionNumber)+1; // 인덱스 추출
   var question = `<div id="question_${questionNumber}" class="question">
     <label id="questionNumber_${questionNumber}">${number}번</label>
+    <span class="question_mid">
+      <label>점수: </label>
+      <input type="text" size="2em" id="questionScore_${questionNumber}" name="questionScore" onchange="writeScore(this)" value="0"/>
+    </span>
     <button type="button" class="btn btn-lg btn-danger btn-xs" id="removeQuestion">문제삭제</button>
     <div class="container-fluid text-center">
       <label class="radio-inline">
@@ -244,7 +276,8 @@ function addExample() {
   var questionIndex = getIndex(questionNumber); // 인덱스 추출
   var exampleObj = {
     number : MYAPP.exampleNumber,
-    checked : false
+    checked : false,
+    score : 0 // 각 보기의 점수
   };
   MYAPP.sequenceArr[questionIndex].example.push(exampleObj);
   var number = MYAPP.sequenceArr[questionIndex].example.indexOf(exampleObj)+1;
