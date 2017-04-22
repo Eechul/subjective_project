@@ -3,7 +3,7 @@ module.exports = function() {
   var conn = mysql.createConnection({
      host     : 'localhost',
      user     : 'root',
-     password : 'dongdb',
+     password : 'onlyroot',
      database : 'webquizdb'
   });
   conn.connect();

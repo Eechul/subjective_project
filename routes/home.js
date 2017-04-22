@@ -21,33 +21,33 @@ module.exports = function(passport) {
    );
      // 이메일 인증 과정
   route.get('/register/:id', function(req, res) {
-    var id = req.params.id
-    var sql = 'UPDATE student SET confirm = 1 WHERE confirm = ?'
+    var id = req.params.id;
+    var sql = 'UPDATE student SET confirm = 1 WHERE confirm = ?';
     conn.query(sql, [id], function(err, data) {
       if(err) {
         console.log(err);
       } else {
-        res.redirect('/home')
+        res.redirect('/home');
       }
-    })
-  })
+    });
+  });
 
   route.post('/checkEmail', function(req, res) {
     var email = req.body.email;
     console.log('email', email);
-    var sql = 'SELECT stemail FROM student where stemail = ?'
+    var sql = 'SELECT stemail FROM student where stemail = ?';
     conn.query(sql, [email], function(err, data, fields) {
       if(err) {
         console.log(err);
       } else {
         if(data[0]) {
-          res.send({result:true})
+          res.send({result:true});
         } else {
-          res.send({result:false})
+          res.send({result:false});
         }
       }
-    })
-  })
+    });
+  });
 
   // 세션에 user 객체가 있는지 확인한 후 있으면 인증을 했는지 안했는지 훝어본다
   // '1' 은 인증완료 나머지는 인층이 안된상태(복잡한 형태의 문자열)
@@ -56,28 +56,28 @@ module.exports = function(passport) {
     if(req.user) {
       switch(req.user.confirm) {
         case '1':
-          res.render('main')
+          res.render('main');
           break;
         default:
-          res.render('confirm')
+          res.render('confirm');
           break;
       }
     } else {
-      res.render('login')
+      res.render('login');
     }
-  })
+  });
 
   route.get('/register', function(req, res) {
-    var sql = 'SELECT DETNUM, DETNAME FROM DEPARTMENT'
+    var sql = 'SELECT DETNUM, DETNAME FROM DEPARTMENT';
     conn.query(sql, function(err, results, fields) {
       if(err) {
         console.log(err);
       } else {
           console.log(results);
-          res.render('register', {detresults : results})
+          res.render('register', {detresults : results});
       }
-    })
-  })
+    });
+  });
   route.post('/register', function(req, res) {
     var confirm = randomStr.makeConfirmId();
     console.log(confirm);
@@ -88,10 +88,10 @@ module.exports = function(passport) {
      req.body.gender,
      req.body.birthdate,
      confirm
-   ]
+   ];
    var pswdsecurity = {
      email : user[1]
-   }
+   };
     // 1. 학생테이블에 정보 저장
     var studentInsertPromise = new Promise(function (resolve, reject) {
       var sql ="INSERT INTO student(detnum, stemail, stname, stgender, stbirthdate, confirm) VALUES (?, ?, ?, ?, ?, ?)"
